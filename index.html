@@ -21,25 +21,33 @@
 <div class="field"><label for="below">지하층 수</label><input id="below" type="number" min="0" step="1" placeholder="예: 2"></div>
 <div class="field"><label for="height">건축물 높이 (m, 알면 입력)</label><input id="height" type="number" min="0" step="0.1"></div>
 <div class="field"><label for="occupancy">수용인원 (명, 알면 입력)</label><input id="occupancy" type="number" min="0" step="1"></div>
-<div class="field"><label for="permitDate">건축허가·신고일 (확인 필요)</label><input id="permitDate" type="date"></div>
+<div class="field"><label for="permitDate">최초 건축허가·신고일</label><input id="permitDate" type="date"></div>
+<div class="field"><label for="approvalDate">사용승인일</label><input id="approvalDate" type="date"></div>
+<div class="field"><label for="constructionDate">착공일 (확인 가능 시)</label><input id="constructionDate" type="date"></div>
+<div class="field"><label for="latestChangeDate">최근 증축·용도변경·대수선일</label><input id="latestChangeDate" type="date"></div>
 <div class="field"><label for="changeType">검토 유형</label><select id="changeType"><option>기존 건축물 점검</option><option>신축 설계 검토</option><option>증축 검토</option><option>용도변경 검토</option><option>대수선 검토</option></select></div>
 </div></div>
 <div class="card"><h2>2. 추가 판정 조건</h2><div class="checks">
 <label><input id="multi" type="checkbox"> 다중이용업소 해당</label><label><input id="complex" type="checkbox"> 복합용도</label><label><input id="windowless" type="checkbox"> 무창층 가능성 있음</label><label><input id="undergroundUse" type="checkbox"> 지하층 사용</label><label><input id="sprinkler" type="checkbox"> 스프링클러 설치 확인됨</label><label><input id="alarm" type="checkbox"> 자동화재탐지설비 확인됨</label>
 </div><div class="field" style="margin-top:12px"><label for="other">기타 조건 / 현장 메모</label><textarea id="other" placeholder="예: 층별 면적, 방화구획, 소방시설 현황, 증축 이력 등"></textarea></div></div>
 </div><div>
-<div class="card"><h2>3. 건축물대장 파일 첨부</h2><div class="filebox"><input id="files" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp" multiple><p class="muted">PDF·사진을 첨부해 검토 화면에서 확인할 수 있습니다. 현재 버전은 OCR 자동 추출을 하지 않으므로 파일을 보고 입력란에 직접 옮겨 적어야 합니다.</p><div id="fileList" class="muted">첨부된 파일 없음</div></div></div>
-<div class="card"><h2>4. 빠른 실행</h2><div class="btns"><button class="btn primary" id="runReview">검토 항목 만들기</button><button class="btn" id="saveBtn">이 브라우저에 저장</button><button class="btn" id="exportBtn">JSON 내보내기</button><button class="btn" id="printBtn">보고서 인쇄 / PDF 저장</button></div><p class="muted">저장 데이터는 현재 브라우저 기기에 보관됩니다. 다른 기기와 자동 동기화되지는 않습니다.</p></div>
-<div class="notice"><strong>주의</strong><br>이 MVP의 규칙은 법적 설치대상 판정을 대신하지 않습니다. 법정 기준, 별표, 경과조치, 용도·층별 조건을 확인하기 전에는 설치 의무를 확정하지 않습니다.</div>
+<div class="card"><h2>3. 건축물대장 파일 첨부</h2><div class="filebox"><input id="files" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp" multiple>
+<div class="btns"><button class="btn primary" id="readBuildingFile" type="button">파일 글자 읽기(OCR)</button><button class="btn" id="clearOcr" type="button">추출 결과 지우기</button></div>
+<div id="ocrStatus" class="notice" style="margin-top:10px">PDF 텍스트 또는 사진의 글자를 추출해 입력란에 옮길 수 있습니다. 자동 추출값은 반드시 원본과 대조하세요.</div>
+<div class="field" style="margin-top:10px"><label for="ocrText">추출된 문서 텍스트 (확인·수정 가능)</label><textarea id="ocrText" style="min-height:150px" placeholder="파일을 선택한 뒤 ‘파일 글자 읽기(OCR)’를 누르세요."></textarea></div>
+<div class="btns"><button class="btn" id="applyOcr" type="button">추출값에서 면적·층수 가져오기</button></div>
+<p class="muted">PDF의 선택 가능한 글자 또는 사진의 OCR을 추출합니다. 스캔 PDF는 자동 OCR 대상이 아닐 수 있으며, 추출값은 반드시 원본과 대조하세요.</p><div id="fileList" class="muted">첨부된 파일 없음</div></div></div>
+<div class="card"><h2>4. 빠른 실행</h2><div class="btns"><button class="btn primary" id="runReview">검토 항목 만들기</button><button class="btn" id="saveBtn">이 브라우저에 저장</button><button class="btn" id="exportBtn">JSON 내보내기</button><button class="btn" id="csvBtn">검토표 CSV</button><button class="btn" id="printBtn">보고서 인쇄 / PDF 저장</button></div><p class="muted">저장 데이터는 현재 브라우저 기기에 보관됩니다. 다른 기기와 자동 동기화되지는 않습니다.</p></div>
+<div class="notice"><strong>주의</strong><br>연혁 검토는 현재 체크리스트 수준이며 법령 연혁을 자동 검색·해석하지 않습니다. 법정 기준, 별표, 부칙·경과조치와 설비별 적용 시점을 공식 원문으로 확인하기 전에는 설치 의무·배선방식·방송방식을 확정하지 않습니다.</div>
 </div></div></section>
 <section id="results" class="panel hidden"><div class="card"><h2>검토 결과 요약</h2><div id="summary" class="kpis"><div class="kpi"><div class="metric">—</div><div>검토 조건</div></div><div class="kpi"><div class="metric">—</div><div>미확인 항목</div></div><div class="kpi"><div class="metric">미확정</div><div>법적 설치대상 판정</div></div></div><div class="notice" style="margin-top:14px">아래 항목은 입력정보를 기반으로 한 <strong>검토 체크리스트</strong>입니다. 설치 대상 여부는 관련 법령·화재안전기준의 현행 조문과 해당 건축물의 개별 조건을 대조한 뒤 확정해야 합니다.</div><div id="resultList"></div></div><div class="card"><h2>입력 정보 보고서</h2><div id="reportInfo" class="muted">건축물 정보를 입력하고 검토를 실행하세요.</div></div></section>
-<section id="laws" class="panel hidden"><div class="grid"><div class="card"><h2>공식 법령 원문 바로가기</h2><p class="muted">외부 사이트 링크를 열어 최신 시행일, 조문, 별표, 개정 이력을 확인하세요. 본 MVP는 법령 본문을 자체 DB에 복제하거나 자동 해석하지 않습니다.</p><div class="result links"><h3>국가법령정보센터</h3><p><a target="_blank" rel="noopener" href="https://www.law.go.kr/법령/소방시설설치및관리에관한법률">소방시설 설치 및 관리에 관한 법률</a></p><p><a target="_blank" rel="noopener" href="https://www.law.go.kr/법령/소방시설설치및관리에관한법률시행령">같은 법 시행령</a></p><p><a target="_blank" rel="noopener" href="https://www.law.go.kr/법령/소방시설설치및관리에관한법률시행규칙">같은 법 시행규칙</a></p><p><a target="_blank" rel="noopener" href="https://www.law.go.kr/LSW/admRulLsInfoP.do">행정규칙 검색 (NFPC·NFTC 등)</a></p><p><a target="_blank" rel="noopener" href="https://nftc.nfire.go.kr/">화재안전기술기준정보시스템</a></p></div><div class="result links"><h3>법령 데이터 연계 신청</h3><p><a target="_blank" rel="noopener" href="https://open.law.go.kr/LSO/openApi/openApiManual.do">법제처 국가법령정보 공동활용 Open API 안내</a></p><p><a target="_blank" rel="noopener" href="https://open.law.go.kr/LSO/usrJoin.do">API 인증키 신청·관리</a></p></div></div>
+<section id="laws" class="panel hidden"><div class="grid"><div class="card"><h2>공식 법령 원문 바로가기</h2><p class="muted">외부 사이트에서 현재·과거 시행본, 신구법 비교, 부칙·경과조치를 직접 확인하세요. 본 MVP는 법령 연혁 자동 검색이나 설비별 법적 판정을 수행하지 않습니다.</p><div class="result links"><h3>국가법령정보센터</h3><p><a target="_blank" rel="noopener" href="https://www.law.go.kr/법령/소방시설설치및관리에관한법률">소방시설 설치 및 관리에 관한 법률</a></p><p><a target="_blank" rel="noopener" href="https://www.law.go.kr/법령/소방시설설치및관리에관한법률시행령">같은 법 시행령</a></p><p><a target="_blank" rel="noopener" href="https://www.law.go.kr/법령/소방시설설치및관리에관한법률시행규칙">같은 법 시행규칙</a></p><p><a target="_blank" rel="noopener" href="https://www.law.go.kr/LSW/admRulLsInfoP.do">행정규칙 검색 (NFPC·NFTC 등)</a></p><p><a target="_blank" rel="noopener" href="https://nftc.nfire.go.kr/">화재안전기술기준정보시스템</a></p></div><div class="result links"><h3>법령 데이터 연계 신청</h3><p><a target="_blank" rel="noopener" href="https://open.law.go.kr/LSO/openApi/openApiManual.do">법제처 국가법령정보 공동활용 Open API 안내</a></p><p><a target="_blank" rel="noopener" href="https://open.law.go.kr/LSO/usrJoin.do">API 인증키 신청·관리</a></p></div></div>
 <div class="card"><h2>개정 감지·내부 규칙 승인 대장</h2><p class="muted">이 버전에서는 담당자가 공식 사이트에서 변경 여부를 확인하고, 검토 내용을 기록한 뒤 승인 상태를 변경합니다. 자동 감지는 서버와 API 키를 연결한 후 추가해야 합니다.</p><div class="field"><label for="lawTitle">법령 / 기준 이름</label><input id="lawTitle" placeholder="예: 소방시설 설치 및 관리에 관한 법률 시행령"></div><div class="field" style="margin-top:9px"><label for="lawVersion">시행일 또는 개정 버전</label><input id="lawVersion" placeholder="예: YYYY-MM-DD 시행"></div><div class="field" style="margin-top:9px"><label for="lawNotes">변경 조문·영향 분석</label><textarea id="lawNotes" placeholder="변경 조문, 영향받는 판정 규칙, 확인할 경과조치"></textarea></div><div class="field" style="margin-top:9px"><label for="lawUrl">공식 원문 URL</label><input id="lawUrl" placeholder="https://www.law.go.kr/... "></div><div class="field" style="margin-top:9px"><label for="lawStatus">검토 상태</label><select id="lawStatus"><option>확인 필요</option><option>검토 중</option><option>승인됨</option><option>반영 보류</option></select></div><div class="btns"><button class="btn primary" id="addLaw">개정 검토 기록 추가</button></div><div id="lawLog"></div></div></div></section>
 <section id="history" class="panel hidden"><div class="card"><h2>브라우저 저장 및 검토 이력</h2><p class="muted">기본 저장은 이 브라우저의 로컬 저장소에만 적용됩니다. 업무용 배포 전에는 사용자 로그인, 서버 저장, 권한관리, 백업, 개인정보·건축물 자료 보호를 추가해야 합니다.</p><div class="btns"><button class="btn primary" id="loadBtn">저장 데이터 불러오기</button><button class="btn" id="exportAll">전체 데이터 내보내기</button><button class="btn warn" id="clearBtn">이 브라우저 데이터 삭제</button></div><div id="historyList"></div></div></section>
 <div class="footer">소방시설 법규 검토 MVP · 현장 검토 보조용 · 공식 법령 확인 및 전문가 검토 필수</div></div>
 <script>
 const $=id=>document.getElementById(id);const STORAGE='fireComplianceMvp_v1';let attachments=[];let currentResults=[];
-const fields=['name','address','purpose','useDetail','area','buildingArea','above','below','height','occupancy','permitDate','changeType','multi','complex','windowless','undergroundUse','sprinkler','alarm','other'];
+const fields=['name','address','purpose','useDetail','area','buildingArea','above','below','height','occupancy','permitDate','approvalDate','constructionDate','latestChangeDate','chronology','changeType','multi','complex','windowless','undergroundUse','sprinkler','alarm','other'];
 function val(id){return $(id).type==='checkbox'?$(id).checked:$(id).value}
 function collect(){let o={};fields.forEach(k=>o[k]=val(k));o.attachments=attachments.map(f=>({name:f.name,type:f.type,size:f.size}));o.updatedAt=new Date().toISOString();return o}
 function apply(o){fields.forEach(k=>{if(o[k]!==undefined){if($(k).type==='checkbox')$(k).checked=!!o[k];else $(k).value=o[k]??''}});attachments=[];renderFiles();}
@@ -48,16 +56,94 @@ function switchTab(id){document.querySelectorAll('.panel').forEach(p=>p.classLis
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
 $('files').addEventListener('change',e=>{attachments=[...attachments,...[...e.target.files]];renderFiles()});function renderFiles(){$('fileList').innerHTML=attachments.length?attachments.map((f,i)=>`<div>📎 ${esc(f.name)} (${Math.round(f.size/1024)} KB) <button class="btn" data-remove="${i}" type="button">제거</button></div>`).join(''):'첨부된 파일 없음';$('fileList').querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{attachments.splice(+b.dataset.remove,1);renderFiles()})}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function buildChecks(o){let a=[];const add=(title,why)=>a.push({title,why,status:'공식 기준 대조 필요'});add('특정소방대상물 해당 용도 및 세부 용도 확인',`입력 주용도: ${fmt(o.purpose)}. 층별 실제 사용 용도와 건축물대장 기재사항을 대조해야 합니다.`);add('소방시설 설치 대상 기준 확인',`연면적 ${fmt(o.area)}㎡, 지상 ${fmt(o.above)}층, 지하 ${fmt(o.below)}층 정보를 시행령 별표 및 관련 기준과 대조해야 합니다.`);add('층별 면적·지하층·무창층 등 조건 확인','건축물 전체 면적만으로 판정하지 말고 층별 면적, 층의 용도, 무창층 판단 요건 및 예외를 확인합니다.');add('건축허가·착공 시점 및 경과조치 확인',`기재된 날짜: ${fmt(o.permitDate)}. 적용 기준의 시행일과 부칙·경과조치를 확인해야 합니다.`);if(o.multi)add('다중이용업소 관련 별도 의무 확인','다중이용업소 해당 여부, 영업장 구조·면적·수용인원 및 관련 특별법·안전시설 기준을 별도로 확인합니다.');if(o.complex||o.purpose==='복합용도')add('복합용도별 설치 기준 및 공용부 검토','각 용도별 기준, 복합용도 적용 원칙, 공용부·방화구획 조건을 확인합니다.');if(o.undergroundUse||Number(o.below)>0)add('지하층 용도 및 피난·경보·소화설비 검토','지하층의 층별 용도·면적·출입·피난 조건과 해당 기준을 확인합니다.');if(o.windowless)add('무창층 해당 여부 실측·법적 정의 확인','체크만으로 무창층으로 확정하지 말고 관련 정의와 개구부 요건을 확인합니다.');add('소화기·옥내소화전·스프링클러 등 설비별 설치 기준 확인','설비별 적용 대상, 면적·층수·용도 조건, 제외·완화 및 기존 건축물 경과조치를 각각 확인합니다.');add('경보설비 및 피난·구조설비 기준 확인','자동화재탐지, 비상방송, 유도등, 비상조명, 피난기구 등 설비별 기준을 확인합니다.');add('소화용수·소화활동설비 기준 확인','연결송수관, 연결살수, 비상콘센트, 제연 등 대상 여부와 건축물 조건을 확인합니다.');if(!o.sprinkler)add('기존 스프링클러 설치 현황 확인','미설치라고 단정할 수 없습니다. 도면·현장·완공검사 자료로 확인하세요.');if(!o.alarm)add('기존 자동화재탐지설비 설치 현황 확인','도면·현장·완공검사 자료로 설치 여부와 정상 작동 상태를 확인하세요.');add('현장 도면·완공검사·점검 결과와 대조','건축물대장만으로 확인되지 않는 설비·구획·실제 사용 상태를 현장 자료로 보완합니다.');return a}
+function buildChecks(o){let a=[];const add=(title,why)=>a.push({title,why,status:'공식 기준 대조 필요'});add('특정소방대상물 해당 용도 및 세부 용도 확인',`입력 주용도: ${fmt(o.purpose)}. 층별 실제 사용 용도와 건축물대장 기재사항을 대조해야 합니다.`);add('소방시설 설치 대상 기준 확인',`연면적 ${fmt(o.area)}㎡, 지상 ${fmt(o.above)}층, 지하 ${fmt(o.below)}층 정보를 시행령 별표 및 관련 기준과 대조해야 합니다.`);add('층별 면적·지하층·무창층 등 조건 확인','건축물 전체 면적만으로 판정하지 말고 층별 면적, 층의 용도, 무창층 판단 요건 및 예외를 확인합니다.');add('건축물 연혁 및 설비별 적용 기준일 확인',`최초 허가·신고일: ${fmt(o.permitDate)}, 착공일: ${fmt(o.constructionDate)}, 사용승인일: ${fmt(o.approvalDate)}, 최근 증축·용도변경·대수선일: ${fmt(o.latestChangeDate)}. 각 날짜에 시행 중이던 법령과 부칙·경과조치를 확인합니다. 날짜 하나만으로 모든 설비의 적용 기준을 단정하지 않습니다.`);
+add('유도등·유도표지의 당시 기준 및 배선방식 확인',`건축허가·착공·사용승인 및 변경 이력을 기준으로 해당 시점의 화재안전기준, 적용 조문과 부칙을 확인합니다. 2선식 등 배선방식은 연도만으로 자동 판정하지 말고 설계도서·시공자료와 대조합니다.`);
+add('비상방송설비의 방송범위 기준 확인',`직상층 우선경보 또는 전층 방송 등 적용 방식은 해당 시점의 기준, 건축물의 층수·용도·설비 구성 및 개정 부칙을 대조합니다. 현재 정보만으로 방송방식을 확정하지 않습니다.`);
+add('자동화재탐지·스프링클러 등 설비별 개정 연혁 확인','설비별로 최초 설치 당시 기준, 이후 증축·용도변경 시 적용 기준, 현행 유지·관리 의무를 구분해 확인합니다.');
+add('연혁 자료와 공식 근거 연결',`입력된 연혁: ${fmt(o.chronology)}. 건축물대장, 허가·신고서, 사용승인서, 소방시설 완공검사 자료 및 해당 법령의 시행일·부칙 원문을 연결하고 검토자가 근거를 기록해야 합니다.`);if(o.multi)add('다중이용업소 관련 별도 의무 확인','다중이용업소 해당 여부, 영업장 구조·면적·수용인원 및 관련 특별법·안전시설 기준을 별도로 확인합니다.');if(o.complex||o.purpose==='복합용도')add('복합용도별 설치 기준 및 공용부 검토','각 용도별 기준, 복합용도 적용 원칙, 공용부·방화구획 조건을 확인합니다.');if(o.undergroundUse||Number(o.below)>0)add('지하층 용도 및 피난·경보·소화설비 검토','지하층의 층별 용도·면적·출입·피난 조건과 해당 기준을 확인합니다.');if(o.windowless)add('무창층 해당 여부 실측·법적 정의 확인','체크만으로 무창층으로 확정하지 말고 관련 정의와 개구부 요건을 확인합니다.');add('소화기·옥내소화전·스프링클러 등 설비별 설치 기준 확인','설비별 적용 대상, 면적·층수·용도 조건, 제외·완화 및 기존 건축물 경과조치를 각각 확인합니다.');add('경보설비 및 피난·구조설비 기준 확인','자동화재탐지, 비상방송, 유도등, 비상조명, 피난기구 등 설비별 기준을 확인합니다.');add('소화용수·소화활동설비 기준 확인','연결송수관, 연결살수, 비상콘센트, 제연 등 대상 여부와 건축물 조건을 확인합니다.');if(!o.sprinkler)add('기존 스프링클러 설치 현황 확인','미설치라고 단정할 수 없습니다. 도면·현장·완공검사 자료로 확인하세요.');if(!o.alarm)add('기존 자동화재탐지설비 설치 현황 확인','도면·현장·완공검사 자료로 설치 여부와 정상 작동 상태를 확인하세요.');add('현장 도면·완공검사·점검 결과와 대조','건축물대장만으로 확인되지 않는 설비·구획·실제 사용 상태를 현장 자료로 보완합니다.');return a}
 function run(){let o=collect();currentResults=buildChecks(o);saveHistory(o,currentResults);switchTab('results')}
 $('runReview').onclick=run;
-function renderResults(){let o=collect();if(!currentResults.length)currentResults=buildChecks(o);let missing=['name','address','purpose','area','above','below','changeType'].filter(k=>!o[k]).length;$('summary').innerHTML=`<div class="kpi"><div class="metric">${currentResults.length}</div><div>검토 체크 항목</div></div><div class="kpi"><div class="metric">${missing}</div><div>필수 입력 미확인</div></div><div class="kpi"><div class="metric">미확정</div><div>법적 설치대상 판정</div></div>`;$('resultList').innerHTML=currentResults.map((r,i)=>`<div class="result"><h3>${i+1}. ${esc(r.title)} <span class="pill warn">확인 필요</span></h3><p>${esc(r.why)}</p><p class="muted">판정 상태: ${esc(r.status)} · 공식 법령과 해당 건축물 조건을 확인한 뒤 담당자가 결론을 기록하세요.</p></div>`).join('');$('reportInfo').innerHTML=`<table>${[['건축물명',o.name],['주소',o.address],['주용도',o.purpose],['세부 용도',o.useDetail],['연면적 (㎡)',o.area],['건축면적 (㎡)',o.buildingArea],['지상층 수',o.above],['지하층 수',o.below],['높이 (m)',o.height],['수용인원',o.occupancy],['허가·신고일',o.permitDate],['검토 유형',o.changeType],['다중이용업소',o.multi?'예':'아니오/미확인'],['복합용도',o.complex?'예':'아니오/미확인'],['메모',o.other]].map(([a,b])=>`<tr><th>${esc(a)}</th><td>${esc(fmt(b))}</td></tr>`).join('')}</table><p class="muted">첨부파일: ${o.attachments.map(f=>esc(f.name)).join(', ')||'없음'}</p>`}
+function renderResults(){let o=collect();if(!currentResults.length)currentResults=buildChecks(o);let missing=['name','address','purpose','area','above','below','changeType'].filter(k=>!o[k]).length;$('summary').innerHTML=`<div class="kpi"><div class="metric">${currentResults.length}</div><div>검토 체크 항목</div></div><div class="kpi"><div class="metric">${missing}</div><div>필수 입력 미확인</div></div><div class="kpi"><div class="metric">미확정</div><div>법적 설치대상 판정</div></div>`;$('resultList').innerHTML=currentResults.map((r,i)=>`<div class="result"><h3>${i+1}. ${esc(r.title)} <span class="pill warn">확인 필요</span></h3><p>${esc(r.why)}</p><p class="muted">판정 상태: ${esc(r.status)} · 공식 법령과 해당 건축물 조건을 확인한 뒤 담당자가 결론을 기록하세요.</p></div>`).join('');$('reportInfo').innerHTML=`<table>${[['건축물명',o.name],['주소',o.address],['주용도',o.purpose],['세부 용도',o.useDetail],['연면적 (㎡)',o.area],['건축면적 (㎡)',o.buildingArea],['지상층 수',o.above],['지하층 수',o.below],['높이 (m)',o.height],['수용인원',o.occupancy],['최초 허가·신고일',o.permitDate],['착공일',o.constructionDate],['사용승인일',o.approvalDate],['최근 증축·용도변경·대수선일',o.latestChangeDate],['건축·소방시설 변경 연혁',o.chronology],['검토 유형',o.changeType],['다중이용업소',o.multi?'예':'아니오/미확인'],['복합용도',o.complex?'예':'아니오/미확인'],['메모',o.other]].map(([a,b])=>`<tr><th>${esc(a)}</th><td>${esc(fmt(b))}</td></tr>`).join('')}</table><p class="muted">첨부파일: ${o.attachments.map(f=>esc(f.name)).join(', ')||'없음'}</p>`}
 function getStore(){try{return JSON.parse(localStorage.getItem(STORAGE))||{history:[],laws:[]}}catch(e){return{history:[],laws:[]}}}function putStore(s){localStorage.setItem(STORAGE,JSON.stringify(s))}function saveHistory(o,r){let s=getStore();s.history.unshift({building:o,results:r,savedAt:new Date().toISOString()});s.history=s.history.slice(0,30);putStore(s)}
 $('saveBtn').onclick=()=>{try{let o=collect();saveHistory(o,currentResults);alert('현재 건축물 정보와 검토 항목을 이 브라우저에 저장했습니다.')}catch(e){alert('저장 실패: 브라우저 저장 공간을 확인하세요.')}};
 function download(name,content,type='application/json'){let blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();URL.revokeObjectURL(url)}$('exportBtn').onclick=()=>download('소방시설검토_'+(collect().name||'건축물')+'.json',JSON.stringify({building:collect(),results:currentResults,exportedAt:new Date().toISOString()},null,2));$('exportAll').onclick=()=>download('소방시설검토_전체데이터.json',JSON.stringify(getStore(),null,2));$('printBtn').onclick=()=>{renderResults();switchTab('results');window.print()};
 $('loadBtn').onclick=()=>{let s=getStore();if(!s.history.length){alert('저장된 데이터가 없습니다.');return}let i=prompt('불러올 번호를 입력하세요:\n'+s.history.map((h,i)=>`${i+1}. ${h.building.name||'이름 없음'} — ${new Date(h.savedAt).toLocaleString('ko-KR')}`).join('\n'));if(i&&s.history[+i-1]){apply(s.history[+i-1].building);currentResults=s.history[+i-1].results||[];alert('불러왔습니다.')}};$('clearBtn').onclick=()=>{if(confirm('이 브라우저에 저장된 검토 이력과 개정 기록을 모두 삭제할까요?')){localStorage.removeItem(STORAGE);renderHistory();renderLawLog()}};
 $('addLaw').onclick=()=>{let title=$('lawTitle').value.trim();if(!title){alert('법령/기준 이름을 입력하세요.');return}let s=getStore();s.laws.unshift({title,version:$('lawVersion').value,notes:$('lawNotes').value,url:$('lawUrl').value,status:$('lawStatus').value,createdAt:new Date().toISOString()});putStore(s);['lawTitle','lawVersion','lawNotes','lawUrl'].forEach(k=>$(k).value='');$('lawStatus').value='확인 필요';renderLawLog()};function renderLawLog(){let s=getStore();$('lawLog').innerHTML=s.laws.length?'<h3 style="margin-top:18px">기록된 검토 건</h3>'+s.laws.map((l,i)=>`<div class="result"><h3>${esc(l.title)} <span class="pill ${l.status==='승인됨'?'ok':'warn'}">${esc(l.status)}</span></h3><p class="muted">${esc(l.version||'시행일 미기재')} · ${new Date(l.createdAt).toLocaleString('ko-KR')}</p><p>${esc(l.notes||'변경 내용 미기재')}</p>${l.url?`<p><a target="_blank" rel="noopener" href="${esc(l.url)}">공식 원문 열기</a></p>`:''}<label>상태 변경 <select data-lawstatus="${i}">${['확인 필요','검토 중','승인됨','반영 보류'].map(x=>`<option ${x===l.status?'selected':''}>${x}</option>`).join('')}</select></label></div>`).join(''):'<p class="muted">아직 기록이 없습니다.</p>';document.querySelectorAll('[data-lawstatus]').forEach(el=>el.onchange=()=>{let s=getStore();s.laws[+el.dataset.lawstatus].status=el.value;putStore(s);renderLawLog()})}
 function renderHistory(){let s=getStore();$('historyList').innerHTML=s.history.length?'<h3 style="margin-top:18px">최근 저장 항목</h3>'+s.history.map((h,i)=>`<div class="result"><h3>${esc(h.building.name||'이름 없는 건축물')}</h3><p>${esc(h.building.address||'주소 미입력')} · ${new Date(h.savedAt).toLocaleString('ko-KR')}</p><p class="muted">체크 항목 ${h.results?.length||0}개</p><button class="btn" data-loadhistory="${i}">이 항목 불러오기</button></div>`).join(''):'<p class="muted">저장된 이력이 없습니다.</p>';document.querySelectorAll('[data-loadhistory]').forEach(b=>b.onclick=()=>{let h=getStore().history[+b.dataset.loadhistory];apply(h.building);currentResults=h.results||[];switchTab('building')})}
+
+// OCR/PDF text extraction. Libraries are loaded only when the user presses the OCR button.
+async function loadScript(url) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = url; s.onload = resolve; s.onerror = () => reject(new Error('라이브러리 로드 실패: ' + url));
+    document.head.appendChild(s);
+  });
+}
+async function extractPdfText(file) {
+  if (!window.pdfjsLib) {
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+  const data = new Uint8Array(await file.arrayBuffer());
+  const pdf = await window.pdfjsLib.getDocument({data}).promise;
+  let text = '';
+  for (let i=1; i<=pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    text += '\\n--- 페이지 ' + i + ' ---\\n' + content.items.map(x=>x.str).join(' ') + '\\n';
+  }
+  return text.trim();
+}
+async function extractImageText(file) {
+  if (!window.Tesseract) await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
+  const result = await window.Tesseract.recognize(file, 'kor+eng', {
+    logger: m => { if (m.status) $('ocrStatus').textContent = '문자 인식 중: ' + m.status + (m.progress ? ' ' + Math.round(m.progress*100) + '%' : ''); }
+  });
+  return result.data.text || '';
+}
+$('readBuildingFile').onclick = async () => {
+  const file = $('files').files[0];
+  if (!file) { alert('먼저 건축물대장 PDF 또는 사진 파일을 선택하세요.'); return; }
+  try {
+    $('readBuildingFile').disabled = true;
+    $('ocrStatus').textContent = '문서를 읽는 중입니다. 파일 크기와 휴대폰 성능에 따라 시간이 걸릴 수 있습니다.';
+    const text = file.type === 'application/pdf' || /\.pdf$/i.test(file.name)
+      ? await extractPdfText(file)
+      : await extractImageText(file);
+    $('ocrText').value = text;
+    $('ocrStatus').textContent = text
+      ? '추출 완료. 아래 텍스트를 원본과 대조한 뒤 필요한 값을 입력란으로 가져오세요.'
+      : '텍스트를 추출하지 못했습니다. 스캔 PDF는 페이지를 이미지로 OCR하거나 직접 입력하세요.';
+  } catch (e) {
+    $('ocrStatus').textContent = '추출 실패: ' + e.message + ' — 인터넷 연결을 확인하거나 직접 입력하세요.';
+  } finally { $('readBuildingFile').disabled = false; }
+};
+$('clearOcr').onclick = () => { $('ocrText').value=''; $('ocrStatus').textContent='추출 결과를 지웠습니다.'; };
+$('applyOcr').onclick = () => {
+  const t = $('ocrText').value;
+  if (!t.trim()) { alert('먼저 파일 글자를 추출하세요.'); return; }
+  const patterns = [
+    ['area', /연면적\\s*[:：]?\\s*([\\d,]+(?:\\.\\d+)?)\\s*(?:㎡|m2|m²)?/i],
+    ['buildingArea', /건축면적\\s*[:：]?\\s*([\\d,]+(?:\\.\\d+)?)\\s*(?:㎡|m2|m²)?/i],
+    ['above', /지상\\s*(?:층수?|층)\\s*[:：]?\\s*(\\d+)\\s*층?/i],
+    ['below', /지하\\s*(?:층수?|층)\\s*[:：]?\\s*(\\d+)\\s*층?/i],
+    ['height', /높이\\s*[:：]?\\s*([\\d.]+)\\s*m?/i]
+  ];
+  const found = [];
+  for (const [id, re] of patterns) {
+    const m = t.match(re);
+    if (m) { $(id).value = m[1].replace(/,/g,''); found.push(id); }
+  }
+  if (found.length) alert('다음 항목을 추출값으로 채웠습니다: ' + found.join(', ') + '\\n반드시 건축물대장 원본과 대조하세요.');
+  else alert('정해진 표기 형식의 면적·층수·높이를 찾지 못했습니다. 추출 텍스트를 확인하고 직접 입력하세요.');
+};
+$('csvBtn').onclick = () => {
+  const o = collect();
+  const rows = [['항목','입력값'],['건축물명',o.name],['주소',o.address],['주용도',o.purpose],['층별·세부 용도',o.useDetail],['연면적(㎡)',o.area],['건축면적(㎡)',o.buildingArea],['지상층 수',o.above],['지하층 수',o.below],['높이(m)',o.height],['수용인원',o.occupancy],['최초 허가·신고일',o.permitDate],['착공일',o.constructionDate],['사용승인일',o.approvalDate],['최근 증축·용도변경·대수선일',o.latestChangeDate],['건축·소방시설 변경 연혁',o.chronology],['검토 유형',o.changeType],...currentResults.map((r,i)=>['검토 항목 '+(i+1),r.title+' — '+r.why])];
+  const csv = '\\ufeff' + rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\\r\\n');
+  download('소방시설검토_보고서.csv', csv, 'text/csv;charset=utf-8');
+};
+
 // Keep file names and input values in this device only; no network transmission occurs in this MVP.
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(err => console.warn('오프라인 기능 등록 실패', err)));
